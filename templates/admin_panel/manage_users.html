@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users — LocalRide{% endblock %}
+{% block content %}
+<div class="dash-wrap">
+  <aside class="dash-sidebar" id="dashSidebar">
+    <a href="{% url 'accounts:admin_dashboard' %}">📊 Dashboard</a>
+    <a href="{% url 'accounts:manage_users' %}" class="active">👤 Manage Users</a>
+    <a href="{% url 'accounts:manage_drivers' %}">🚘 Manage Drivers</a>
+    <a href="{% url 'accounts:manage_bookings' %}">📒 Manage Bookings</a>
+    <a href="{% url 'accounts:reports' %}">📈 Reports</a>
+    <a href="/django-admin/">⚙️ Django Admin</a>
+  </aside>
+  <main class="dash-main">
+    <div class="dash-header"><h1>Manage riders</h1></div>
+    <form method="get" style="margin-bottom:22px;max-width:340px;">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search by username, email or phone...">
+    </form>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Username</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.username }}</td>
+            <td>{{ u.get_full_name|default:"—" }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.phone|default:"—" }}</td>
+            <td><span class="badge {% if u.is_active %}completed{% else %}cancelled{% endif %}">{% if u.is_active %}Active{% else %}Blocked{% endif %}</span></td>
+            <td>
+              <form method="post" action="{% url 'accounts:toggle_user_active' u.id %}">
+                {% csrf_token %}
+                <button class="btn btn-sm {% if u.is_active %}btn-danger{% else %}btn-primary{% endif %}">
+                  {% if u.is_active %}Block{% else %}Unblock{% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6"><div class="empty-state">No riders found.</div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+{% endblock %}

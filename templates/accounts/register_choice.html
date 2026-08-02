@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="container" style="text-align:center;">
+    <div class="eyebrow" style="justify-content:center">Join LocalRide</div>
+    <h1 style="font-size:34px;">How would you like to join?</h1>
+    <p class="text-soft">You can always add another role later from your profile.</p>
+  </div>
+  <div class="container role-choice">
+    <a href="{% url 'accounts:register_customer' %}" class="role-card">
+      <div class="icon-badge" style="margin:0 auto 18px;width:56px;height:56px;font-size:26px;">🧍</div>
+      <h3>I need a ride</h3>
+      <p class="text-soft">Book rides, track fares and manage your ride history.</p>
+    </a>
+    <a href="{% url 'accounts:register_driver' %}" class="role-card">
+      <div class="icon-badge" style="margin:0 auto 18px;width:56px;height:56px;font-size:26px;">🚗</div>
+      <h3>I want to drive</h3>
+      <p class="text-soft">Register your vehicle and start earning after admin approval.</p>
+    </a>
+  </div>
+  <p style="text-align:center;">Already have an account? <a href="{% url 'accounts:login' %}" style="color:var(--teal-dim);font-weight:700;">Log in</a></p>
+</section>
+{% endblock %}

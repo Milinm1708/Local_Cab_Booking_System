@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Log In — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="form-card">
+    <div class="eyebrow">Welcome back</div>
+    <h1 style="font-size:26px;">Log in to LocalRide</h1>
+    <form method="post" data-loading novalidate>
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+      </div>
+      {% if form.errors %}<div class="field-error">Invalid username or password.</div>{% endif %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="btn btn-primary btn-block">Log in</button>
+    </form>
+    <div class="form-foot">New to LocalRide? <a href="{% url 'accounts:register_choice' %}" style="color:var(--teal-dim);font-weight:700;">Create an account</a></div>
+    <div class="card" style="margin-top:22px;padding:16px 18px;font-size:13px;">
+      <b>Demo logins</b> (after loading sample data):<br>
+      Admin: <code>admin / admin123</code><br>
+      Rider: <code>rider1 / rider12345</code><br>
+      Driver: <code>driver1 / driver12345</code>
+    </div>
+  </div>
+</section>
+{% endblock %}

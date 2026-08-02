@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Book a Ride — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="container">
+    <div class="eyebrow">Book a ride</div>
+    <h1 style="font-size:28px;margin-bottom:26px;">Where are we headed?</h1>
+
+    <form method="post" id="bookForm" data-loading>
+      {% csrf_token %}
+      <div class="map-panel">
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="form-group">
+              <label>Pickup location</label>
+              <input type="text" id="pickupAddress" name="pickup_address" placeholder="Search pickup address..." required autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label>Drop location</label>
+              <input type="text" id="dropAddress" name="drop_address" placeholder="Search drop address..." required autocomplete="off">
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:6px;">
+              <button type="button" id="setPickupBtn" class="btn btn-outline btn-sm">📍 Set pickup</button>
+              <button type="button" id="setDropBtn" class="btn btn-outline btn-sm">🏁 Set drop</button>
+            </div>
+            <button type="button" id="useLocationBtn" class="btn btn-ghost btn-sm">Use my current location</button>
+            <input type="hidden" id="pickupLat" name="pickup_lat" required>
+            <input type="hidden" id="pickupLng" name="pickup_lng" required>
+            <input type="hidden" id="dropLat" name="drop_lat" required>
+            <input type="hidden" id="dropLng" name="drop_lng" required>
+            <input type="hidden" id="rideTypeInput" name="ride_type" value="mini">
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <h3 style="font-size:15px;">Choose a ride type</h3>
+            <div class="vehicle-option selected" data-type="mini">
+              <div><div class="v-name">🚗 Mini</div><div class="v-eta"><span id="eta-mini">—</span> away</div></div>
+              <div class="v-fare" id="fare-mini">₹—</div>
+            </div>
+            <div class="vehicle-option" data-type="sedan">
+              <div><div class="v-name">🚙 Sedan</div><div class="v-eta"><span id="eta-sedan">—</span> away</div></div>
+              <div class="v-fare" id="fare-sedan">₹—</div>
+            </div>
+            <div class="vehicle-option" data-type="suv">
+              <div><div class="v-name">🚐 SUV</div><div class="v-eta"><span id="eta-suv">—</span> away</div></div>
+              <div class="v-fare" id="fare-suv">₹—</div>
+            </div>
+          </div>
+
+          <div class="fare-box">
+            <div class="fare-row"><span>Distance</span><span id="distanceValue">—</span></div>
+            <div class="fare-row"><span>Estimated total</span><span id="totalFare">₹—</span></div>
+          </div>
+          <button type="submit" id="bookRideBtn" class="btn btn-primary btn-block" style="margin-top:16px;" disabled>Confirm booking</button>
+        </div>
+
+        <div>
+          <div id="map"></div>
+          <p class="help-text">Tip: search an address, click the map, or drag the pins to fine-tune pickup &amp; drop.</p>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="{% static 'js/map.js' %}"></script>
+<script>
+  initBookingMap({
+    mapId: 'map',
+    pickupInputId: 'pickupAddress',
+    dropInputId: 'dropAddress',
+    pickupLatId: 'pickupLat',
+    pickupLngId: 'pickupLng',
+    dropLatId: 'dropLat',
+    dropLngId: 'dropLng',
+    fareApiUrl: '{% url "rides:fare_estimate_api" %}',
+  });
+</script>
+{% endblock %}

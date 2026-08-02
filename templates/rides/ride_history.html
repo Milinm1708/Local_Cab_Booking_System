@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Ride History — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="container">
+    <div class="dash-header"><h1>My ride history</h1><a href="{% url 'rides:book_ride' %}" class="btn btn-primary">+ Book a ride</a></div>
+
+    <div class="tag-filter">
+      <a href="?" class="{% if not status_filter %}active{% endif %}">All</a>
+      <a href="?status=requested" class="{% if status_filter == 'requested' %}active{% endif %}">Requested</a>
+      <a href="?status=accepted" class="{% if status_filter == 'accepted' %}active{% endif %}">Accepted</a>
+      <a href="?status=ongoing" class="{% if status_filter == 'ongoing' %}active{% endif %}">Ongoing</a>
+      <a href="?status=completed" class="{% if status_filter == 'completed' %}active{% endif %}">Completed</a>
+      <a href="?status=cancelled" class="{% if status_filter == 'cancelled' %}active{% endif %}">Cancelled</a>
+    </div>
+    <form method="get" style="margin-bottom:22px;max-width:340px;">
+      <input type="hidden" name="status" value="{{ status_filter }}">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search by address...">
+    </form>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ride</th><th>Route</th><th>Type</th><th>Fare</th><th>Status</th><th>Date</th><th></th></tr></thead>
+        <tbody>
+          {% for ride in rides %}
+          <tr>
+            <td>#{{ ride.id }}</td>
+            <td>{{ ride.pickup_address|truncatechars:20 }} → {{ ride.drop_address|truncatechars:20 }}</td>
+            <td>{{ ride.get_ride_type_display }}</td>
+            <td>₹{{ ride.fare }}</td>
+            <td><span class="badge {{ ride.status }}">{{ ride.get_status_display }}</span></td>
+            <td>{{ ride.requested_at|date:"d M, H:i" }}</td>
+            <td style="display:flex;gap:8px;">
+              <a href="{% url 'rides:ride_detail' ride.id %}" class="btn btn-outline btn-sm">View</a>
+              {% if ride.status == 'requested' or ride.status == 'accepted' %}
+              <form method="post" action="{% url 'rides:cancel_ride' ride.id %}" onsubmit="return confirm('Cancel this ride?');">
+                {% csrf_token %}
+                <button class="btn btn-danger btn-sm">Cancel</button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7"><div class="empty-state"><div class="icon">🕓</div>No rides found.</div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Driver Sign Up — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="form-card wide">
+    <div class="eyebrow">Driver application</div>
+    <h1 style="font-size:26px;">Drive with LocalRide</h1>
+    <p class="text-soft" style="margin-top:-8px;">Your account will be reviewed by an admin before you can accept rides.</p>
+    <form method="post" data-loading novalidate>
+      {% csrf_token %}
+      <h3 style="font-size:15px;margin-top:26px;">Personal details</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.first_name.id_for_label }}">First name</label>
+          {{ form.first_name }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.last_name.id_for_label }}">Last name</label>
+          {{ form.last_name }}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}
+          {% for e in form.username.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.email.id_for_label }}">Email</label>
+          {{ form.email }}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.phone.id_for_label }}">Phone</label>
+          {{ form.phone }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.experience_years.id_for_label }}">Years of driving experience</label>
+          {{ form.experience_years }}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.password1.id_for_label }}">Password</label>
+          {{ form.password1 }}
+          {% for e in form.password1.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+          {{ form.password2 }}
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;margin-top:10px;">License &amp; vehicle details</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.license_number.id_for_label }}">Driving license number</label>
+          {{ form.license_number }}
+          {% for e in form.license_number.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.vehicle_type.id_for_label }}">Vehicle type</label>
+          {{ form.vehicle_type }}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.make_model.id_for_label }}">Make &amp; model</label>
+          {{ form.make_model }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.color.id_for_label }}">Color</label>
+          {{ form.color }}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.plate_number.id_for_label }}">Plate number</label>
+          {{ form.plate_number }}
+          {% for e in form.plate_number.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.year.id_for_label }}">Year</label>
+          {{ form.year }}
+        </div>
+      </div>
+      <div class="form-group" style="max-width:200px;">
+        <label for="{{ form.seats.id_for_label }}">Seats</label>
+        {{ form.seats }}
+      </div>
+
+      {% if form.non_field_errors %}<div class="field-error">{{ form.non_field_errors }}</div>{% endif %}
+      <button type="submit" class="btn btn-primary btn-block">Submit application</button>
+    </form>
+    <div class="form-foot">Already registered? <a href="{% url 'accounts:login' %}" style="color:var(--teal-dim);font-weight:700;">Log in</a></div>
+  </div>
+</section>
+{% endblock %}

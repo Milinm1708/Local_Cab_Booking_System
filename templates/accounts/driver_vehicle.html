@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Vehicle Details — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="form-card">
+    <div class="eyebrow">Vehicle management</div>
+    <h1 style="font-size:24px;">Update your vehicle details</h1>
+    <form method="post" data-loading novalidate>
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="{{ form.vehicle_type.id_for_label }}">Vehicle type</label>
+        {{ form.vehicle_type }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.make_model.id_for_label }}">Make &amp; model</label>
+        {{ form.make_model }}
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.color.id_for_label }}">Color</label>
+          {{ form.color }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.plate_number.id_for_label }}">Plate number</label>
+          {{ form.plate_number }}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.year.id_for_label }}">Year</label>
+          {{ form.year }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.seats.id_for_label }}">Seats</label>
+          {{ form.seats }}
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Save vehicle</button>
+    </form>
+    <div class="form-foot"><a href="{% url 'accounts:driver_dashboard' %}">&larr; Back to dashboard</a></div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="container">
+    <div class="dash-header">
+      <div>
+        <div class="eyebrow">Rider dashboard</div>
+        <h1>Hey {{ user.first_name|default:user.username }} 👋</h1>
+      </div>
+      <a href="{% url 'rides:book_ride' %}" class="btn btn-primary">+ Book a new ride</a>
+    </div>
+
+    {% if active_ride %}
+    <div class="card" style="border-color:var(--teal);margin-bottom:28px;">
+      <div class="flex-between">
+        <div>
+          <span class="badge {{ active_ride.status }}">{{ active_ride.get_status_display }}</span>
+          <h3 style="margin-top:10px;">{{ active_ride.pickup_address|truncatechars:40 }} → {{ active_ride.drop_address|truncatechars:40 }}</h3>
+          <p class="text-soft">Ride #{{ active_ride.id }} · {{ active_ride.distance_km }} km · ₹{{ active_ride.fare }}</p>
+        </div>
+        <a href="{% url 'rides:ride_detail' active_ride.id %}" class="btn btn-dark btn-sm">Track ride</a>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="grid-3" style="margin-bottom:34px;">
+      <div class="kpi"><div class="kpi-label">Total rides</div><div class="kpi-value">{{ total_rides }}</div></div>
+      <div class="kpi accent"><div class="kpi-label">Completed rides</div><div class="kpi-value">{{ completed_rides }}</div></div>
+      <div class="kpi"><div class="kpi-label">Total spent</div><div class="kpi-value">₹{{ total_spent }}</div></div>
+    </div>
+
+    <div class="flex-between" style="margin-bottom:16px;">
+      <h3 style="margin:0;">Recent rides</h3>
+      <a href="{% url 'rides:ride_history' %}" style="font-weight:600;color:var(--teal-dim);">View all &rarr;</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ride</th><th>Route</th><th>Type</th><th>Fare</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          {% for ride in recent_rides %}
+          <tr>
+            <td>#{{ ride.id }}</td>
+            <td>{{ ride.pickup_address|truncatechars:22 }} → {{ ride.drop_address|truncatechars:22 }}</td>
+            <td>{{ ride.get_ride_type_display }}</td>
+            <td>₹{{ ride.fare }}</td>
+            <td><span class="badge {{ ride.status }}">{{ ride.get_status_display }}</span></td>
+            <td><a href="{% url 'rides:ride_detail' ride.id %}" style="font-weight:600;">View</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6"><div class="empty-state"><div class="icon">🚕</div>No rides yet — book your first one!</div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Manage Drivers — LocalRide{% endblock %}
+{% block content %}
+<div class="dash-wrap">
+  <aside class="dash-sidebar" id="dashSidebar">
+    <a href="{% url 'accounts:admin_dashboard' %}">📊 Dashboard</a>
+    <a href="{% url 'accounts:manage_users' %}">👤 Manage Users</a>
+    <a href="{% url 'accounts:manage_drivers' %}" class="active">🚘 Manage Drivers</a>
+    <a href="{% url 'accounts:manage_bookings' %}">📒 Manage Bookings</a>
+    <a href="{% url 'accounts:reports' %}">📈 Reports</a>
+    <a href="/django-admin/">⚙️ Django Admin</a>
+  </aside>
+  <main class="dash-main">
+    <div class="dash-header"><h1>Manage drivers</h1></div>
+    <div class="tag-filter">
+      <a href="?status=" class="{% if not status_filter %}active{% endif %}">All</a>
+      <a href="?status=pending" class="{% if status_filter == 'pending' %}active{% endif %}">Pending</a>
+      <a href="?status=approved" class="{% if status_filter == 'approved' %}active{% endif %}">Approved</a>
+      <a href="?status=rejected" class="{% if status_filter == 'rejected' %}active{% endif %}">Rejected</a>
+    </div>
+    <form method="get" style="margin-bottom:22px;max-width:340px;">
+      <input type="hidden" name="status" value="{{ status_filter }}">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search by username or license...">
+    </form>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Driver</th><th>License</th><th>Vehicle</th><th>Rating</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          {% for d in drivers %}
+          <tr>
+            <td>{{ d.user.get_full_name|default:d.user.username }}</td>
+            <td>{{ d.license_number }}</td>
+            <td>{% if d.vehicle %}{{ d.vehicle.make_model }} ({{ d.vehicle.plate_number }}){% else %}—{% endif %}</td>
+            <td>{{ d.average_rating }}★</td>
+            <td>
+              {% if d.is_approved %}<span class="badge completed">Approved</span>
+              {% elif d.is_rejected %}<span class="badge rejected">Rejected</span>
+              {% else %}<span class="badge requested">Pending</span>{% endif %}
+            </td>
+            <td style="display:flex;gap:8px;">
+              {% if not d.is_approved %}
+              <form method="post" action="{% url 'accounts:approve_driver' d.id %}">{% csrf_token %}<button class="btn btn-primary btn-sm">Approve</button></form>
+              {% endif %}
+              {% if not d.is_rejected %}
+              <form method="post" action="{% url 'accounts:reject_driver' d.id %}">{% csrf_token %}<button class="btn btn-outline btn-sm">Reject</button></form>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6"><div class="empty-state">No drivers found.</div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+{% endblock %}

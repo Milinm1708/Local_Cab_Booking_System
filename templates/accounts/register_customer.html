@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Rider Sign Up — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="form-card">
+    <div class="eyebrow">Rider account</div>
+    <h1 style="font-size:26px;">Create your rider account</h1>
+    <form method="post" data-loading novalidate>
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.first_name.id_for_label }}">First name</label>
+          {{ form.first_name }}
+          {% for e in form.first_name.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.last_name.id_for_label }}">Last name</label>
+          {{ form.last_name }}
+          {% for e in form.last_name.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+        {% for e in form.username.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.email.id_for_label }}">Email</label>
+          {{ form.email }}
+          {% for e in form.email.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.phone.id_for_label }}">Phone</label>
+          {{ form.phone }}
+          {% for e in form.phone.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Password</label>
+        {{ form.password1 }}
+        {% for e in form.password1.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+        {{ form.password2 }}
+        {% for e in form.password2.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+      </div>
+      {% if form.non_field_errors %}<div class="field-error">{{ form.non_field_errors }}</div>{% endif %}
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+    </form>
+    <div class="form-foot">Already registered? <a href="{% url 'accounts:login' %}" style="color:var(--teal-dim);font-weight:700;">Log in</a></div>
+  </div>
+</section>
+{% endblock %}

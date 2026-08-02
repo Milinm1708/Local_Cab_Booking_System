@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Ride #{{ ride.id }} — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="container" style="max-width:900px;">
+    <div class="dash-header">
+      <div>
+        <div class="eyebrow">Ride #{{ ride.id }}</div>
+        <h1 style="font-size:26px;">{{ ride.pickup_address|truncatechars:34 }} → {{ ride.drop_address|truncatechars:34 }}</h1>
+      </div>
+      <span class="badge {{ ride.status }}" style="font-size:14px;padding:8px 16px;">{{ ride.get_status_display }}</span>
+    </div>
+
+    {% if ride.status != 'cancelled' and ride.status != 'rejected' %}
+    <div class="status-steps">
+      <div class="step {% if ride.status in 'requested,accepted,ongoing,completed' %}done{% endif %}">
+        <div class="circle">1</div><div class="label">Requested</div>
+      </div>
+      <div class="step {% if ride.status in 'accepted,ongoing,completed' %}done{% endif %}">
+        <div class="circle">2</div><div class="label">Accepted</div>
+      </div>
+      <div class="step {% if ride.status in 'ongoing,completed' %}done{% endif %}">
+        <div class="circle">3</div><div class="label">Ongoing</div>
+      </div>
+      <div class="step {% if ride.status == 'completed' %}done{% endif %}">
+        <div class="circle">4</div><div class="label">Completed</div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="grid-2" style="align-items:start;">
+      <div>
+        <div id="trackMap"></div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <h3 style="font-size:15px;">Trip details</h3>
+          <div class="fare-row"><span>Vehicle type</span><span>{{ ride.get_ride_type_display }}</span></div>
+          <div class="fare-row"><span>Distance</span><span>{{ ride.distance_km }} km</span></div>
+          <div class="fare-row"><span>Est. duration</span><span>{{ ride.estimated_duration_min }} min</span></div>
+          <div class="fare-row"><span>Fare</span><span>₹{{ ride.fare }}</span></div>
+          {% if ride.payment %}<div class="fare-row"><span>Payment</span><span>{{ ride.payment.get_method_display }} · {{ ride.payment.get_status_display }}</span></div>{% endif %}
+        </div>
+
+        {% if ride.driver %}
+        <div class="card" style="margin-bottom:16px;">
+          <h3 style="font-size:15px;">Driver</h3>
+          <p style="margin:0 0 4px;font-weight:700;">{{ ride.driver.user.get_full_name|default:ride.driver.user.username }}</p>
+          <p class="text-soft" style="margin:0;">{{ ride.driver.average_rating }}★
+            {% if ride.driver.vehicle %} · {{ ride.driver.vehicle.make_model }} ({{ ride.driver.vehicle.plate_number }}){% endif %}
+          </p>
+        </div>
+        {% endif %}
+
+        {% if user == ride.customer %}
+          {% if ride.status == 'requested' or ride.status == 'accepted' %}
+          <form method="post" action="{% url 'rides:cancel_ride' ride.id %}" onsubmit="return confirm('Cancel this ride?');">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-block">Cancel ride</button>
+          </form>
+          {% endif %}
+        {% endif %}
+
+        {% if request.user.role == 'driver' and ride.driver.user == request.user %}
+          {% if ride.status == 'accepted' %}
+          <form method="post" action="{% url 'rides:start_ride' ride.id %}"><button class="btn btn-primary btn-block">Start ride</button></form>
+          {% elif ride.status == 'ongoing' %}
+          <form method="post" action="{% url 'rides:complete_ride' ride.id %}"><button class="btn btn-primary btn-block">Complete ride</button></form>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    {% if ride.status == 'completed' and user == ride.customer %}
+      {% if ride.has_review %}
+      <div class="card" style="margin-top:24px;">
+        <h3 style="font-size:15px;">Your review</h3>
+        <p>{{ ride.review.rating }}★ — {{ ride.review.comment|default:"No comment left." }}</p>
+      </div>
+      {% elif review_form %}
+      <div class="card" style="margin-top:24px;">
+        <h3 style="font-size:15px;">Rate this ride</h3>
+        <form method="post" action="{% url 'rides:submit_review' ride.id %}">
+          {% csrf_token %}
+          <div class="star-rating" data-target="#id_rating">
+            <span data-value="1">★</span><span data-value="2">★</span><span data-value="3">★</span>
+            <span data-value="4">★</span><span data-value="5" class="active">★</span>
+          </div>
+          {{ review_form.rating }}
+          <div class="form-group" style="margin-top:14px;">{{ review_form.comment }}</div>
+          <button type="submit" class="btn btn-primary">Submit review</button>
+        </form>
+      </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="{% static 'js/map.js' %}"></script>
+<script>
+  drawStaticRoute('trackMap', [{{ ride.pickup_lat }}, {{ ride.pickup_lng }}], [{{ ride.drop_lat }}, {{ ride.drop_lng }}]);
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}My Profile — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="container" style="max-width:640px;">
+    <div class="card" style="padding:34px;">
+      <div style="display:flex;align-items:center;gap:18px;margin-bottom:26px;">
+        <div class="avatar-lg">
+          {% if user.avatar_url %}<img src="{{ user.avatar_url }}" alt="">{% else %}{{ user.username|slice:":1"|upper }}{% endif %}
+        </div>
+        <div>
+          <h2 style="margin-bottom:2px;">{{ user.get_full_name|default:user.username }}</h2>
+          <span class="badge completed">{{ user.get_role_display }}</span>
+        </div>
+      </div>
+      <form method="post" enctype="multipart/form-data" data-loading novalidate>
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.first_name.id_for_label }}">First name</label>
+            {{ form.first_name }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.last_name.id_for_label }}">Last name</label>
+            {{ form.last_name }}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Email</label>
+            {{ form.email }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.phone.id_for_label }}">Phone</label>
+            {{ form.phone }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="{{ form.address.id_for_label }}">Address</label>
+          {{ form.address }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.profile_photo.id_for_label }}">Profile photo</label>
+          {{ form.profile_photo }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

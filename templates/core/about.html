@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}About Us — LocalRide{% endblock %}
+{% block content %}
+<section class="section-sm">
+  <div class="container" style="max-width:820px;">
+    <div class="eyebrow">Our story</div>
+    <h1 style="font-size:38px;">Local rides, built on open technology.</h1>
+    <p class="text-soft" style="font-size:16.5px;line-height:1.7;">
+      LocalRide started as a final-year engineering project with one goal: prove that a
+      genuinely useful, Uber-style booking platform doesn't need paid map APIs or expensive
+      infrastructure. Every pin you drop uses OpenStreetMap data, every route is drawn with
+      Leaflet.js, and the whole backend runs on Django with a single SQLite file.
+    </p>
+    <p class="text-soft" style="font-size:16.5px;line-height:1.7;">
+      Today the platform connects everyday riders with verified local drivers across mini,
+      sedan and SUV categories — with transparent, formula-based fares and a real admin
+      workflow for approving drivers and monitoring the marketplace.
+    </p>
+  </div>
+</section>
+
+<section class="section" style="background:var(--surface);border-top:1px solid var(--line);">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow" style="justify-content:center">What we stand for</div>
+      <h2>Principles behind the build</h2>
+    </div>
+    <div class="grid-3">
+      <div class="card feature-card hoverable">
+        <div class="icon-badge">🧭</div>
+        <h3>Open by default</h3>
+        <p>OpenStreetMap + Leaflet.js means no vendor lock-in and no billing surprises.</p>
+      </div>
+      <div class="card feature-card hoverable">
+        <div class="icon-badge">🔍</div>
+        <h3>Transparent pricing</h3>
+        <p>Our fare formula — base + distance + time, by vehicle type — is visible before you book.</p>
+      </div>
+      <div class="card feature-card hoverable">
+        <div class="icon-badge">🤝</div>
+        <h3>Community rated</h3>
+        <p>Riders and drivers both build a track record through honest reviews.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container grid-3" style="text-align:center;">
+    <div class="kpi"><div class="kpi-value">100%</div><div class="kpi-label">Free & open mapping stack</div></div>
+    <div class="kpi accent"><div class="kpi-value">3</div><div class="kpi-label">Roles: rider, driver, admin</div></div>
+    <div class="kpi"><div class="kpi-value">SQLite</div><div class="kpi-label">Zero-config database</div></div>
+  </div>
+</section>
+{% endblock %}

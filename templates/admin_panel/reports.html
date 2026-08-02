@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Reports — LocalRide{% endblock %}
+{% block content %}
+<div class="dash-wrap">
+  <aside class="dash-sidebar" id="dashSidebar">
+    <a href="{% url 'accounts:admin_dashboard' %}">📊 Dashboard</a>
+    <a href="{% url 'accounts:manage_users' %}">👤 Manage Users</a>
+    <a href="{% url 'accounts:manage_drivers' %}">🚘 Manage Drivers</a>
+    <a href="{% url 'accounts:manage_bookings' %}">📒 Manage Bookings</a>
+    <a href="{% url 'accounts:reports' %}" class="active">📈 Reports</a>
+    <a href="/django-admin/">⚙️ Django Admin</a>
+  </aside>
+  <main class="dash-main">
+    <div class="dash-header"><h1>Reports</h1></div>
+    <div class="chart-card" style="margin-bottom:30px;">
+      <h3 style="font-size:15px;">Daily completed rides &amp; revenue</h3>
+      <canvas id="revenueChart" height="240"></canvas>
+    </div>
+    <h3>Top earning drivers</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Driver</th><th>Total earnings</th><th>Rating</th></tr></thead>
+        <tbody>
+          {% for d in top_drivers %}
+          <tr><td>{{ d.user.get_full_name|default:d.user.username }}</td><td>₹{{ d.total_earnings }}</td><td>{{ d.average_rating }}★</td></tr>
+          {% empty %}
+          <tr><td colspan="3"><div class="empty-state">No data yet.</div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="{% static 'js/dashboard-charts.js' %}"></script>
+<script>
+  renderRevenueTrendChart('revenueChart',
+    [{% for d in daily %}'{{ d.day|date:"d M" }}',{% endfor %}],
+    [{% for d in daily %}{{ d.revenue }},{% endfor %}]);
+</script>
+{% endblock %}

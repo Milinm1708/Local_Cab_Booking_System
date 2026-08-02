@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Admin Dashboard — LocalRide{% endblock %}
+{% block content %}
+<div class="dash-wrap">
+  <aside class="dash-sidebar" id="dashSidebar">
+    <a href="{% url 'accounts:admin_dashboard' %}" class="active">📊 Dashboard</a>
+    <a href="{% url 'accounts:manage_users' %}">👤 Manage Users</a>
+    <a href="{% url 'accounts:manage_drivers' %}">🚘 Manage Drivers</a>
+    <a href="{% url 'accounts:manage_bookings' %}">📒 Manage Bookings</a>
+    <a href="{% url 'accounts:reports' %}">📈 Reports</a>
+    <a href="/django-admin/">⚙️ Django Admin</a>
+  </aside>
+  <main class="dash-main">
+    <div class="dash-header">
+      <div>
+        <div class="eyebrow">Admin panel</div>
+        <h1>Marketplace overview</h1>
+      </div>
+      <button class="mobile-toggle" id="sidebarToggle" style="display:flex;">☰</button>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:30px;">
+      <div class="kpi"><div class="kpi-label">Riders</div><div class="kpi-value">{{ total_customers }}</div></div>
+      <div class="kpi"><div class="kpi-label">Drivers</div><div class="kpi-value">{{ total_drivers }}</div></div>
+      <div class="kpi" style="border-color:var(--amber);"><div class="kpi-label">Pending approvals</div><div class="kpi-value">{{ pending_drivers }}</div></div>
+      <div class="kpi accent"><div class="kpi-label">Total revenue</div><div class="kpi-value">₹{{ total_revenue }}</div></div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:34px;">
+      <div class="chart-card">
+        <h3 style="font-size:15px;">Rides by status</h3>
+        <canvas id="statusChart" height="220"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3 style="font-size:15px;">Rides by vehicle type</h3>
+        <canvas id="typeChart" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="flex-between" style="margin-bottom:16px;">
+      <h3 style="margin:0;">Recent bookings</h3>
+      <a href="{% url 'accounts:manage_bookings' %}" style="font-weight:600;color:var(--teal-dim);">Manage all &rarr;</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ride</th><th>Rider</th><th>Driver</th><th>Fare</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for ride in recent_rides %}
+          <tr>
+            <td>#{{ ride.id }}</td>
+            <td>{{ ride.customer.username }}</td>
+            <td>{{ ride.driver.user.username|default:"—" }}</td>
+            <td>₹{{ ride.fare }}</td>
+            <td><span class="badge {{ ride.status }}">{{ ride.get_status_display }}</span></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5"><div class="empty-state">No bookings yet.</div></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="{% static 'js/dashboard-charts.js' %}"></script>
+<script>
+  renderRidesByStatusChart('statusChart',
+    [{% for r in rides_by_status %}'{{ r.status }}',{% endfor %}],
+    [{% for r in rides_by_status %}{{ r.count }},{% endfor %}]);
+  renderRideTypeChart('typeChart',
+    [{% for r in rides_by_type %}'{{ r.ride_type }}',{% endfor %}],
+    [{% for r in rides_by_type %}{{ r.count }},{% endfor %}]);
+</script>
+{% endblock %}

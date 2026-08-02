@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}LocalRide — Your City, One Ride Away{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="loader-overlay" id="loaderOverlay"><div class="spinner"></div></div>
+
+{% if messages %}
+<div class="messages">
+  {% for message in messages %}
+  <div class="toast {{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="{% url 'core:home' %}" class="brand">
+      <span class="brand-mark">LR</span> LocalRide
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="{% url 'core:home' %}" class="navlink {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+      <a href="{% url 'core:about' %}" class="navlink {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
+      <a href="{% url 'core:contact' %}" class="navlink {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+      {% if user.is_authenticated %}
+        {% if is_customer %}
+          <a href="{% url 'rides:book_ride' %}" class="navlink">Book a Ride</a>
+          <a href="{% url 'rides:ride_history' %}" class="navlink">My Rides</a>
+        {% elif is_driver %}
+          <a href="{% url 'accounts:driver_dashboard' %}" class="navlink">Dashboard</a>
+          <a href="{% url 'accounts:driver_earnings' %}" class="navlink">Earnings</a>
+        {% elif is_admin_role %}
+          <a href="{% url 'accounts:admin_dashboard' %}" class="navlink">Admin Panel</a>
+        {% endif %}
+      {% endif %}
+    </div>
+    <div class="nav-cta">
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:profile' %}" class="user-chip">
+          <span class="avatar">{{ user.username|slice:":1"|upper }}</span>
+          {{ user.first_name|default:user.username }}
+        </a>
+        <a href="{% url 'accounts:logout' %}" class="btn btn-outline btn-sm">Logout</a>
+      {% else %}
+        <a href="{% url 'accounts:login' %}" class="btn btn-ghost btn-sm">Log in</a>
+        <a href="{% url 'accounts:register_choice' %}" class="btn btn-primary btn-sm">Sign up</a>
+      {% endif %}
+      <button class="mobile-toggle" id="mobileToggle">☰</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div>
+      <div class="footer-brand"><span class="brand-mark">LR</span> LocalRide</div>
+      <p style="max-width:280px;font-size:14px;color:#8B96B8;line-height:1.6;">
+        Reliable local cab booking for your city — built on free, open technology:
+        OpenStreetMap, Leaflet.js and Django.
+      </p>
+      <div class="social-row">
+        <a href="#" aria-label="Twitter">𝕏</a>
+        <a href="#" aria-label="Instagram">◎</a>
+        <a href="#" aria-label="LinkedIn">in</a>
+      </div>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <a href="{% url 'core:about' %}">About Us</a>
+      <a href="{% url 'core:contact' %}">Contact</a>
+      <a href="{% url 'accounts:register_driver' %}">Drive with Us</a>
+    </div>
+    <div>
+      <h4>Product</h4>
+      <a href="{% url 'accounts:register_choice' %}">Get the App</a>
+      <a href="{% url 'core:home' %}#how-it-works">How it Works</a>
+      <a href="{% url 'core:home' %}#cities">Cities</a>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <a href="{% url 'core:contact' %}">Help Center</a>
+      <a href="{% url 'core:contact' %}">Safety</a>
+      <a href="{% url 'core:contact' %}">Terms &amp; Privacy</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>&copy; {% now "Y" %} LocalRide. Built for learning — not a real dispatch service.</span>
+    <span>Maps &copy; OpenStreetMap contributors</span>
+  </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

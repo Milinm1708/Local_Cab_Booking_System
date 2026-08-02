@@ -1,0 +1,42 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="duckduckgo-search" />
+            <item index="1" class="java.lang.String" itemvalue="tiktoken" />
+            <item index="2" class="java.lang.String" itemvalue="faiss-cpu" />
+            <item index="3" class="java.lang.String" itemvalue="streamlit_chat" />
+            <item index="4" class="java.lang.String" itemvalue="accelerate" />
+            <item index="5" class="java.lang.String" itemvalue="fastapi" />
+            <item index="6" class="java.lang.String" itemvalue="uvicorn" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="E303" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyStatementEffectInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="milin.imoport" />
+          <option value="main.photo" />
+          <option value="main.PhotoImage" />
+          <option value="main.Label" />
+          <option value="qrcode.save" />
+          <option value="qrcode.make" />
+          <option value="list.*" />
+          <option value="main.headers" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
